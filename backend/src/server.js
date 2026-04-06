@@ -1,6 +1,7 @@
 import express from 'express';
 import ConnectDB from './config/database.js';
 import authRoutes from './routes/authRoute.js';
+import movieRoute from './routes/movieRoute.js';
 import cookieParser from 'cookie-parser';
 
 
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/api/auth', authRoutes);
+app.use('/api/movies', movieRoute);
 
 
 

@@ -24,18 +24,23 @@ const bookingSchema = new Schema({
         },
         seatType: {
             type: String,
-            enum: ['Standard', 'VIP']
+            enum: ['Standard', 'VIP', 'Sweetbox']
         }
     }],
     totalAmount: {
         type: Number,
-        required: true
+        required: trueh
     },
-    status: String,
+    status: {
+        type: String,
+        enum: ['Pending', 'Confirmed', 'Cancelled', 'Refunded'],
+        default: 'Pending'
+    }
   },
   {
     timestamps: true
-})
+  }
+)
 
 
 bookingSchema.index({userID: 1});
@@ -44,6 +49,3 @@ bookingSchema.index({createdAt: -1});
 
 const Booking = mongoose.model('Booking', bookingSchema);
 export default Booking;
-
-
-

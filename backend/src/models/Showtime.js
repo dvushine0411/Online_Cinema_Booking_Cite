@@ -20,6 +20,26 @@ const showtimeSchema = new mongoose.Schema({
     endTime: {
         type: Date,
         required: true
+    },
+    ticketPrices: {
+        standard: {
+            type: Number,
+            required: true,
+            default: 80000
+        },
+
+        vip: {
+            type: Number,
+            required: true,
+            default: 100000
+        },
+
+        sweetbox: {
+            type: Number,
+            required: true,
+            default: 120000
+        }
+
     }
 })
 

@@ -110,6 +110,7 @@ export const signOut = async (req, res) => {
         const refreshToken = req.cookies?.refreshToken;
         if(refreshToken)
         {
+            console.log(`Xoá thành công session của ${req.user._id}`);
             await Session.deleteOne({refreshToken: refreshToken});
         }
 

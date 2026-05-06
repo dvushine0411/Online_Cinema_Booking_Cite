@@ -18,10 +18,9 @@ const roomSchema = new Schema({
         },
         type: {
             type: String,
-            enum: ['Standard', 'VIP'],
+            enum: ['Standard', 'VIP', 'Sweetbox'],
             default: 'Standard'
         }
-        
     }]
 })
 

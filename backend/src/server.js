@@ -2,7 +2,11 @@ import express from 'express';
 import ConnectDB from './config/database.js';
 import authRoutes from './routes/authRoute.js';
 import movieRoute from './routes/movieRoute.js';
+import roomRoute from './routes/roomRoute.js';
+import showtimeRoute from './routes/showtimeRoute.js';
 import cookieParser from 'cookie-parser';
+import { initBookingScheduler } from './services/bookingScheduler.js';
+
 
 
 const app = express();
@@ -19,11 +23,15 @@ app.get('/', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/movies', movieRoute);
+app.use('/api/rooms', roomRoute);
+app.use('/api/showtimes', showtimeRoute);
+
 
 
 
 ConnectDB().then(() => {
     console.log('Database connected!');
+    initBookingScheduler();
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     })

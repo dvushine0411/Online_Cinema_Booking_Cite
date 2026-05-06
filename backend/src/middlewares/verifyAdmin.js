@@ -1,8 +1,6 @@
 import express from 'express';
 
 
-
-
 export const verifyAdmin = (req, res, next) => {
     const role = req.user.role;
 
@@ -14,5 +12,5 @@ export const verifyAdmin = (req, res, next) => {
     }
 
     next();
-    
+
 }

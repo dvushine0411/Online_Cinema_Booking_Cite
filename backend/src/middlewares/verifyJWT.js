@@ -15,8 +15,8 @@ export const verifyJWT = (req, res, next) => {
         authToken,
         process.env.ACCESS_TOKEN_SECRET,
         (err, decoded) => {
-            if(err) return res.status(403);   // Lỗi token không đúng //
-            req.user = decoded;               // Gán username vào phần req.user // 
+            if(err) return res.status(403);   
+            req.user = decoded;               // Gán payload vào phần req.user // 
             next();
         }
         

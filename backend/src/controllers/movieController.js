@@ -19,8 +19,7 @@ export const getAllMovies = async (req, res) => {
         {
             queryCondition.status = status;
         }
-
-
+        
         if(day)
         {
             queryCondition.$expr = {

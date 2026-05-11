@@ -6,22 +6,21 @@ import { getPagination, formatPaginatedData } from '../helpers/pagination.js';
 export const getAllMovies = async (req, res) => {
     try {
 
-        const {search, status, day, date, month, year} = req.query;
+        const { search, status, day, date, month, year } = req.query;
+
+        const { page, limit, skip } = getPagination(req.query);
 
         let queryCondition = {};
 
-        if(search)
-        {
-            queryCondition.title = {$regex: search, $options: 'i'};
+        if (search) {
+            queryCondition.title = { $regex: search, $options: 'i' };
         }
 
-        if(status)
-        {
+        if (status) {
             queryCondition.status = status;
         }
-        
-        if(day)
-        {
+
+        if (day) {
             queryCondition.$expr = {
                 $eq: [
                     {
@@ -31,13 +30,13 @@ export const getAllMovies = async (req, res) => {
                 ]
             };
         }
-        
+
         if (month && year) {
 
-            const startDate = new Date(year, parseInt(month) - 1, 1); 
-            
-            const endDate = new Date(year, parseInt(month), 0); 
-            endDate.setHours(23, 59, 59, 999); 
+            const startDate = new Date(year, parseInt(month) - 1, 1);
+
+            const endDate = new Date(year, parseInt(month), 0);
+            endDate.setHours(23, 59, 59, 999);
 
             queryCondition.releasedDate = {
                 $gte: startDate,
@@ -45,8 +44,7 @@ export const getAllMovies = async (req, res) => {
             };
         }
 
-        if(date)
-        {
+        if (date) {
             const startDate = new Date(date);
             const endDate = new Date(date);
 
@@ -57,14 +55,23 @@ export const getAllMovies = async (req, res) => {
             }
         }
 
-        const movies = await Movie.find(queryCondition).sort({createdAt: -1});
+        const [movies, totalMovies] = await Promise.all([
+            Movie.find(queryCondition)
+                .sort({ createdAt: -1 })
+                .skip(skip)
+                .limit(limit),
+
+            Movie.countDocuments(queryCondition)
+        ]);
+
+        const result = formatPaginatedData(movies, totalMovies, page, limit);
 
         return res.status(200).json({
             message: "Successfully movies filtered",
-            data: movies
+            data: result
 
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             message: "Error happened!",
@@ -75,12 +82,11 @@ export const getAllMovies = async (req, res) => {
 
 export const getMovieById = async (req, res) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
 
-        const movie = await Movie.findOne(id);
+        const movie = await Movie.findById(id);
 
-        if(!movie)
-        {
+        if (!movie) {
             return res.status(404).json({
                 message: "Movie not found!"
             })
@@ -105,12 +111,12 @@ export const getMovieById = async (req, res) => {
 
 export const createMovie = async (req, res) => {
     try {
-        const {title, description, duration, genres, posterURL, releasedDate, actors, status} = req.body;
+        const { title, description, duration, genres, releasedDate, actors, status } = req.body;
 
+        const posterURL = req.file ? req.file.path : '';
 
-        if(!title || !description || !duration || !genres || !posterURL || !releasedDate || !actors || !status)
-        {
-            return res.status(400).json({message: "Missing the requirements!"});
+        if (!title || !description || !duration || !genres || !posterURL || !releasedDate || !actors || !status) {
+            return res.status(400).json({ message: "Missing the requirements!" });
         }
 
         const newMovie = await Movie.create({
@@ -128,20 +134,20 @@ export const createMovie = async (req, res) => {
             message: "Successfully movie created!",
             data: newMovie
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             message: "Error happened!",
             error: error.message
         });
-        
+
     }
 
 };
 
 export const deleteMovie = async (req, res) => {
     try {
-        const { id } = req.params; 
+        const { id } = req.params;
 
         const deletedMovie = await Movie.findByIdAndDelete(id);
 
@@ -165,7 +171,7 @@ export const deleteMovie = async (req, res) => {
 export const updateMovie = async (req, res) => {
     try {
         const { id } = req.params;
-        const updateData = req.body; 
+        const updateData = req.body;
 
         const updatedMovie = await Movie.findByIdAndUpdate(id, updateData, { new: true });
 

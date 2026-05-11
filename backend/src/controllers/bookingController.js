@@ -10,8 +10,7 @@ export const createBooking = async (req, res) => {
         const { showtimeID, seats } = req.body;  // Chọn ghế và showtimeId để chọn chỗ ngồi và thời gian chiếu phim // 
         const userId = req.user.id;
 
-        if(!showtimeID || !seats || seats.length == 0)
-        {
+        if (!showtimeID || !seats || seats.length == 0) {
             return res.status(400).json({
                 message: "Mising required fields"
             });
@@ -19,8 +18,7 @@ export const createBooking = async (req, res) => {
 
         const showtime = await Showtime.findById(showtimeID);
 
-        if(!showtime)
-        {
+        if (!showtime) {
             return res.status(404).json({
                 message: "Showtime not found!"
             });
@@ -32,10 +30,10 @@ export const createBooking = async (req, res) => {
         const updatedShowtime = await Showtime.findOneAndUpdate(
             {
                 _id: showtimeID,
-                bookedSeat: {$nin: seatIds}
+                bookedSeat: { $nin: seatIds }
             },
             {
-                $push: {bookedSeat: {$each: seats}}
+                $push: { bookedSeat: { $each: seats } }
             },
             {
                 new: true
@@ -43,19 +41,18 @@ export const createBooking = async (req, res) => {
         );
 
         // Nếu trả về showtime = false tức là ghế đã đc đặt thì trả về kết quả json như sau: //
-        if(!updatedShowtime)
-        {
+        if (!updatedShowtime) {
             return res.status(400).json({
                 message: "One of the seats is already booked!"
             });
-            
+
         }
 
         let totalAmount = 0;
         seats.forEach(seat => {
             const type = seat.seatType.toLowerCase();
             const price = showtime.ticketPrices[type] || showtime.ticketPrices['standard'];
-        
+
             totalAmount += price;
 
         });
@@ -71,10 +68,10 @@ export const createBooking = async (req, res) => {
 
 
         return res.status(201).json({
-            message: "Successfully booked",
+            message: "Booking successfully",
             data: newBooking
         })
-        
+
     } catch (error) {
         return res.status(500).json({
             message: "Error happened!",
@@ -90,33 +87,31 @@ export const getAllBookings = async (req, res) => {
 
         let queryCondition = {};
 
-        if(status)
-        {
+        if (status) {
             queryCondition.status = status;
         }
 
-        if(userId)
-        {
+        if (userId) {
             queryCondition.userID = userId;
         }
 
         const bookings = await Booking.find(queryCondition)
-            .populate('userID', 'name email')
+            .populate('userID', 'fullname email')
             .populate('showtimeID')
-            .sort({createdAt: -1});
-        
+            .sort({ createdAt: -1 });
+
         return res.status(200).json({
             message: "Successfully fetched user bookings",
             data: bookings,
             total: bookings.length
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             message: 'Error happened!',
             error: error.message
         });
-        
+
     }
 }
 
@@ -125,11 +120,10 @@ export const getBookingById = async (req, res) => {
         const { id } = req.params;
 
         const booking = await Booking.findById(id)
-            .populate('userID', 'name email phone')
+            .populate('userID', 'fullname email phone')
             .populate('showtimeID');
-        
-        if(!booking)
-        {
+
+        if (!booking) {
             return res.status(404).json({
                 message: 'Booking not found!'
             });
@@ -139,32 +133,31 @@ export const getBookingById = async (req, res) => {
             message: "Successfully fetched booking",
             data: booking
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             message: 'Error happened!',
             error: error.message
-        });        
+        });
     }
 
 }
 
-export const cancelBooking = async(req, res) => {
+export const cancelBooking = async (req, res) => {
     try {
         const { id } = req.params;
         const userId = req.user.id;
 
-        const booking = Booking.findById(id);
+        const booking = await Booking.findById(id);
 
-        if(!booking)
-        {
+
+        if (!booking) {
             return res.status(404).json({
                 message: "Booking not found!"
             });
         }
-        
-        if(booking.userID.toString() !== userId.toString())
-        {
+
+        if (booking.userID.toString() !== userId.toString()) {
             return res.status(403).json({
                 message: "Unauthorized to cancel this booking"
             });
@@ -177,8 +170,7 @@ export const cancelBooking = async(req, res) => {
 
         const thirtyMinutesMs = 30 * 60 * 1000;
 
-        if(timeUntilShowtime < thirtyMinutesMs)
-        {
+        if (timeUntilShowtime < thirtyMinutesMs) {
             return res.status(400).json({
                 message: "Cannot cancel booking within 30 minutes before showtime"
 
@@ -187,6 +179,7 @@ export const cancelBooking = async(req, res) => {
 
         const seatIds = booking.seats.map(s => `${s.row}${s.number}`);
 
+        // Gỡ seat ra //
         await Showtime.findByIdAndUpdate(
             booking.showtimeID,
             {
@@ -208,38 +201,36 @@ export const cancelBooking = async(req, res) => {
             message: 'Error happened!',
             error: error.message
         });
-        
+
     }
 
 }
 
-export const updateBookingStatus = async(req, res) => {
+export const updateBookingStatus = async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;
 
         const validStatuses = ['Pending', 'Confirmed', 'Cancelled', 'Refunded'];
 
-        if(!validStatuses.includes(status))
-        {
+        if (!validStatuses.includes(status)) {
             return res.status(400).json({
                 message: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
             });
         }
 
         const booking = await Booking.findByIdAndUpdate(
-            id, 
+            id,
             { status },
             { new: true }
         );
 
-        if(!booking)
-        {
+        if (!booking) {
             return res.status(404).json({
                 message: 'Booking not found!'
             });
         }
-        
+
     } catch (error) {
         return res.status(500).json({
             message: 'Error happened!',
@@ -256,8 +247,7 @@ export const getUserBookings = async (req, res) => {
 
         let queryCondition = { userID: userId };
 
-        if(status)
-        {
+        if (status) {
             queryCondition.status = status;
         }
 
@@ -270,13 +260,13 @@ export const getUserBookings = async (req, res) => {
             data: bookings,
             total: bookings.length
         });
-        
+
     } catch (error) {
         return res.status(500).json({
             message: "Error happened!",
             error: error.message
         });
-        
+
     }
 }
 

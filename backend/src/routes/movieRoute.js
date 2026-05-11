@@ -1,7 +1,8 @@
 import express from 'express';
-import {getAllMovies, getMovieById, createMovie, deleteMovie, updateMovie} from '../controllers/movieController.js';
+import { getAllMovies, getMovieById, createMovie, deleteMovie, updateMovie } from '../controllers/movieController.js';
 import { verifyJWT } from '../middlewares/verifyJWT.js';
 import { verifyAdmin } from '../middlewares/verifyAdmin.js';
+import upload from '../middlewares/upload.js';
 
 
 const router = express.Router();
@@ -11,7 +12,7 @@ router.get('/:id', getMovieById);
 
 
 // router dành riêng cho admin //
-router.post('/create', verifyJWT, verifyAdmin, createMovie);
+router.post('/create', verifyJWT, verifyAdmin, upload.single('poster'), createMovie);
 router.delete('/delete/:id', verifyJWT, verifyAdmin, deleteMovie);
 router.patch('/update/:id', verifyJWT, verifyAdmin, updateMovie);
 

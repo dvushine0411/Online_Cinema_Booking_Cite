@@ -29,12 +29,24 @@ const bookingSchema = new Schema({
     }],
     totalAmount: {
         type: Number,
-        required: trueh
+        required: true
     },
     status: {
         type: String,
         enum: ['Pending', 'Confirmed', 'Cancelled', 'Refunded'],
         default: 'Pending'
+    },
+    payment: {
+        transactionId: String,
+        status: {
+            type: String,
+            enum: ['Pending', 'Completed', 'Failed'],
+            default: 'Pending'
+        },
+        method: String,
+        amount: Number,
+        bankCode: String,
+        paidAt: Date
     }
   },
   {

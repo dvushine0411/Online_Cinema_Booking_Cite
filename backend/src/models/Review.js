@@ -29,7 +29,6 @@ const reviewSchema = new mongoose.Schema({
     {
         timestamps: true
     }
-
 );
 
 reviewSchema.index({ movieId: 1, userId: 1 }, { unique: true });

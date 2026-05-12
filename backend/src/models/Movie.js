@@ -28,12 +28,20 @@ const movieSchema = new Schema({
     status: {
         type: String,
         enum: ['Now Showing', 'Coming Soon']
+    },
+    avgRating: {
+        type: Number,
+        default: 0
+    },
+    reviewCount: {
+        type: Number,
+        default: 0
     }
-  },
-  {
-    timestamps: true
+},
+    {
+        timestamps: true
 
-})
+    })
 
 const Movie = mongoose.model('Movie', movieSchema);
 export default Movie;

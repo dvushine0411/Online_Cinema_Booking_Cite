@@ -6,7 +6,10 @@ import roomRoute from './routes/roomRoute.js';
 import showtimeRoute from './routes/showtimeRoute.js';
 import bookingRoute from './routes/bookingRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
+import reviewRoute from './routes/reviewRoute.js';
+import newsRoute from './routes/newsRoute.js';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import { initBookingScheduler } from './services/bookingScheduler.js';
 
 
@@ -15,8 +18,12 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+}));
 
-const PORT = process.env.PORT;    
+const PORT = process.env.PORT;
 
 app.get('/', (req, res) => {
     res.send('Good luck to you!!!');
@@ -29,6 +36,8 @@ app.use('/api/rooms', roomRoute);
 app.use('/api/showtimes', showtimeRoute);
 app.use('/api/booking/', bookingRoute);
 app.use('/api/payments', paymentRoute);
+app.use('/api/reviews', reviewRoute);
+app.use('/api/news', newsRoute);
 
 
 

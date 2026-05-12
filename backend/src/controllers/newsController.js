@@ -55,7 +55,7 @@ export const getAllNews = async (req, res) => {
             News.countDocuments(queryCondition)
         ]);
 
-        const result = formatPaginatedData(newsList, page, limit, totalNews);
+        const result = formatPaginatedData(newsList, totalNews, page, limit);
 
         return res.status(200).json({
             message: 'List news',
@@ -109,7 +109,7 @@ export const createNews = async (req, res) => {
     try {
         const { title, content, category } = req.body;
 
-        const authorId = req.user._id;
+        const authorId = req.user.id;
 
         const thumbnailURL = req.file ? req.file.path : '';
 
@@ -149,7 +149,7 @@ export const updateNews = async (req, res) => {
 
         const { title, content, category } = req.body;
 
-        const userId = req.user._id;
+        const userId = req.user.id;
 
         const news = await News.findById(id);
 
@@ -202,7 +202,7 @@ export const deleteNews = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const userId = req.user._id;
+        const userId = req.user.id;
 
         const isAdmin = req.user.role === 'Admin';
 

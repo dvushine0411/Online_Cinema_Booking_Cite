@@ -54,7 +54,7 @@ export const updateComment = async (req, res) => {
         const { id } = req.params;
         const { content } = req.body;
 
-        const userId = req.user._id;
+        const userId = req.user.id;
 
         if (!content) {
             return res.status(400).json({
@@ -98,8 +98,8 @@ export const updateComment = async (req, res) => {
 export const deleteComment = async (req, res) => {
     try {
         const { newsId, id } = req.params;
-        const userId = req.user._id;
-        const isAdmin = req.user.role === 'admin';
+        const userId = req.user.id;
+        const isAdmin = req.user.role === 'Admin';
 
         const comment = await NewsComment.findById(id);
         if (!comment) {

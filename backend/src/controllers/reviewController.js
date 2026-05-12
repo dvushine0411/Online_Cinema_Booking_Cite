@@ -8,7 +8,7 @@ export const createReview = async (req, res) => {
     try {
         const { movieId, rating, comment } = req.body;
 
-        const userId = req.user._id;
+        const userId = req.user.id;
 
         if (!movieId || !rating) {
             return res.status(400).json({
@@ -41,7 +41,7 @@ export const createReview = async (req, res) => {
             comment
         });
 
-        await newReview.populate('userId', 'username fullname ');
+        await newReview.populate('userId', 'username fullname');
 
         await updateMovieRating(movieId);
 
@@ -137,7 +137,7 @@ export const deleteReviews = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const userId = req.user._id;
+        const userId = req.user.id;
         const isAdmin = req.user.role === 'Admin';
 
         const review = await Review.findById(id);

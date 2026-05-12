@@ -231,6 +231,11 @@ export const updateBookingStatus = async (req, res) => {
             });
         }
 
+        return res.status(200).json({
+            message: "Successfully updated booking status",
+            data: booking
+        });
+
     } catch (error) {
         return res.status(500).json({
             message: 'Error happened!',

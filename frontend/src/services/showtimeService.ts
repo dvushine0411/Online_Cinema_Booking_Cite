@@ -16,7 +16,7 @@ export const showtimeService = {
     },
 
     getShowtimesByMovieId: async (movieID: string, params?: Pick<ShowtimeFilter, "date" | "startDate" | "endDate">): Promise<ApiResponse<Showtime[]>> => {
-        const response = await api.get(`showtimes/${movieID}`, { params });
+        const response = await api.get(`showtimes/movies/${movieID}`, { params });
         return response.data;
     },
 

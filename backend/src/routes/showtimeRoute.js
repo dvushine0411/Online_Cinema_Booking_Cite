@@ -9,8 +9,9 @@ const router = express.Router();
 // Public Routes //
 
 router.get('/', getAllShowtimes);
+router.get('/movies/:movieID', getShowtimesByMovieId);
 router.get('/:id', getShowtimeById);
-router.get('/:movieID', getShowtimesByMovieId);
+
 
 // Admin Routes //
 router.post('/', verifyJWT, verifyAdmin, createShowtime);

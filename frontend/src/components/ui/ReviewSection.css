@@ -1,0 +1,331 @@
+/* ─── ReviewSection.css ─────────────────────────────────── */
+
+/* ── Tiêu đề ─────────────────────────────────────────────── */
+
+.rs-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.rs-title__count {
+    color: var(--color-gold);
+    font-family: var(--font-body);
+    font-size: 20px;
+}
+
+/* ── Nút viết đánh giá ───────────────────────────────────── */
+
+.rs-write-btn-wrap {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+}
+
+.rs-write-btn {
+    padding: 8px 20px;
+    background: var(--color-gold-muted);
+    color: var(--color-gold);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.rs-write-btn:hover {
+    background: rgba(212, 175, 55, 0.25);
+    border-color: var(--color-gold);
+}
+
+/* ── Form đánh giá ───────────────────────────────────────── */
+
+.rs-form {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.rs-form__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.rs-form__textarea {
+    width: 100%;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: var(--font-body);
+    padding: 10px 14px;
+    resize: vertical;
+    outline: none;
+    transition: border-color var(--transition);
+    line-height: 1.6;
+}
+
+.rs-form__textarea:focus {
+    border-color: var(--color-gold);
+}
+
+.rs-form__textarea::placeholder {
+    color: var(--text-muted);
+}
+
+.rs-form__actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* ── Hint đăng nhập ──────────────────────────────────────── */
+
+.rs-login-hint {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+/* ── Stars inline ────────────────────────────────────────── */
+
+.rs-inline-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+}
+
+.rs-star {
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1;
+    transition: color var(--transition), transform var(--transition);
+}
+
+.rs-star--on {
+    color: var(--color-gold);
+}
+
+.rs-inline-stars--lg .rs-star {
+    font-size: 26px;
+}
+
+.rs-star--interactive {
+    cursor: pointer;
+}
+
+.rs-star--interactive:hover {
+    transform: scale(1.2);
+    color: var(--color-gold-light);
+}
+
+/* ── Danh sách cards ─────────────────────────────────────── */
+
+.rs-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+
+.rs-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    transition: border-color var(--transition);
+}
+
+.rs-card:hover {
+    border-color: var(--border-hover);
+}
+
+/* Header: avatar + meta */
+
+.rs-card__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 12px;
+}
+
+.rs-card__avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--bg-surface-2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--color-gold);
+    flex-shrink: 0;
+}
+
+.rs-card__meta {
+    flex: 1;
+}
+
+.rs-card__name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.rs-card__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.rs-card__score {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+.rs-card__time {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 3px;
+}
+
+/* Comment */
+
+.rs-card__comment {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 16px;
+    white-space: pre-line;
+}
+
+/* Footer */
+
+.rs-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 4px;
+}
+
+.rs-card__vote {
+    display: flex;
+    gap: 4px;
+}
+
+.rs-vote-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 13px;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.rs-vote-btn:hover {
+    background: var(--bg-surface-2);
+    border-color: var(--border-hover);
+    color: var(--text-primary);
+}
+
+.rs-card__right-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.rs-action-btn {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background var(--transition);
+}
+
+.rs-action-btn--edit {
+    background: var(--color-gold-muted);
+    color: var(--color-gold);
+}
+
+.rs-action-btn--edit:hover {
+    background: rgba(212, 175, 55, 0.25);
+    border-color: var(--color-gold);
+}
+
+.rs-action-btn--delete {
+    background: var(--color-red-muted);
+    color: var(--color-red);
+}
+
+.rs-action-btn--delete:hover {
+    background: rgba(232, 25, 44, 0.25);
+    border-color: var(--color-red);
+}
+
+.rs-share-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+    color: var(--text-secondary);
+}
+
+.rs-share-btn:hover {
+    background: var(--bg-surface-2);
+    border-color: var(--border-hover);
+}
+
+/* ── Edit mode ───────────────────────────────────────────── */
+
+.rs-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+    .rs-card__footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .rs-card__name-row {
+        gap: 6px;
+    }
+}

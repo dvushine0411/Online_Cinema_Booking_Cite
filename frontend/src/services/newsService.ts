@@ -20,7 +20,7 @@ export const newsService = {
 
     getAllNews: async (params?: NewsFilter): Promise<PaginatedData<News>> => {
         const response = await api.get("news", { params });
-        return response.data;
+        return response.data.data;
 
     },
 

@@ -1,0 +1,179 @@
+/* ── Hero Banner ─────────────────────────────── */
+.hero-banner {
+    position: relative;
+    height: 420px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    background: var(--bg-surface);
+}
+
+.hero-banner__bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(232, 25, 44, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 80% at 80% 30%, rgba(212, 175, 55, 0.1) 0%, transparent 60%),
+        linear-gradient(135deg, #0A0A0F 0%, #12121A 50%, #0A0A0F 100%);
+    z-index: 0;
+}
+
+.hero-banner__overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    background: linear-gradient(to top, var(--bg-base), transparent);
+    z-index: 1;
+}
+
+.hero-banner__content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+}
+
+.hero-banner__sub {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--color-gold);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+}
+
+.hero-banner__title {
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+}
+
+.hero-banner__desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ── Movie Section ───────────────────────────── */
+.home-movies {
+    padding: 48px 0 64px;
+}
+
+/* ── Tabs ────────────────────────────────────── */
+.home-tabs {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+}
+
+.home-tab {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    padding: 12px 4px;
+    cursor: pointer;
+    position: relative;
+    transition: color var(--transition);
+}
+
+.home-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-red);
+    border-radius: 2px 2px 0 0;
+    transform: scaleX(0);
+    transition: transform var(--transition);
+}
+
+.home-tab:hover {
+    color: var(--text-secondary);
+}
+
+.home-tab--active {
+    color: var(--text-primary);
+}
+
+.home-tab--active::after {
+    transform: scaleX(1);
+}
+
+.home-tab__divider {
+    width: 1px;
+    height: 20px;
+    background: var(--border);
+    margin: 0 20px;
+}
+
+/* ── Movie Grid ──────────────────────────────── */
+.home-movies__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* ── Skeleton Loading ────────────────────────── */
+.home-movies__loading {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.movie-card-skeleton {
+    width: 160px;
+    height: 240px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(90deg,
+            var(--bg-surface) 25%,
+            var(--bg-surface-2) 50%,
+            var(--bg-surface) 75%);
+    background-size: 200% auto;
+    animation: shimmer-bg 1.5s linear infinite;
+}
+
+@keyframes shimmer-bg {
+    from {
+        background-position: 200% center;
+    }
+
+    to {
+        background-position: -200% center;
+    }
+}
+
+/* ── Empty State ─────────────────────────────── */
+.home-movies__empty {
+    text-align: center;
+    padding: 80px 0;
+    color: var(--text-muted);
+    font-size: 15px;
+}
+
+/* ── Responsive ──────────────────────────────── */
+@media (max-width: 768px) {
+    .hero-banner__title {
+        font-size: 32px;
+    }
+
+    .hero-banner {
+        height: 320px;
+    }
+
+    .home-movies__grid,
+    .home-movies__loading {
+        gap: 12px;
+    }
+}

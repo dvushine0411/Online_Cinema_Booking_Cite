@@ -18,8 +18,8 @@ export const BOOKING_STATUS_COLOR: Record<string, string> = {
 }
 
 export const MOVIE_STATUS = {
-    NOW_SHOWING: 'Now showing',
-    COMING_SOON: 'Coming soon',
+    NOW_SHOWING: 'Now Showing',
+    COMING_SOON: 'Coming Soon',
 } as const;
 
 export const NEWS_CATEGORIES = [

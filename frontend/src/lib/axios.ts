@@ -36,31 +36,29 @@ axiosInstance.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        if (error.response?.status === 401 || error.response?.status === 403 && !originalRequest.retry) {
-            originalRequest.retry = true;
-        }
+        const status = error.response?.status;
 
-        try {
-            const response = await axiosInstance.post('/auth/refresh');
-            const { accessToken } = response.data;
+        if (status === 401 && !originalRequest._retry && !originalRequest.url?.includes('auth/')) {
+            originalRequest._retry = true;
 
-            if (accessToken) {
-                localStorage.setItem("accessToken", accessToken);
-                originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-                return axiosInstance(originalRequest);
+            try {
+                const response = await axiosInstance.post('/auth/refresh');
+                const { accessToken } = response.data;
 
+                if (accessToken) {
+                    useAuthStore.getState().setAccessToken(accessToken);
+                    originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+                    return axiosInstance(originalRequest);
+                }
+
+            } catch (refreshError) {
+                useAuthStore.getState().clearAuth();
+                window.location.href = '/auth/signin';
+                return Promise.reject(refreshError);
             }
-
-
-        } catch (refreshError) {
-            localStorage.removeItem("accessToken");
-            window.location.href = '/auth/signin';
-            return Promise.reject(refreshError);
         }
         return Promise.reject(error);
-
-    }
-);
+    });
 
 
 export default axiosInstance;

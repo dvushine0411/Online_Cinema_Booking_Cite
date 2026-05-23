@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.post('/create', verifyJWT, createPayment);
 
-router.get('/:bookingId', verifyJWT, checkPaymentStatus);
-
 router.get('/vnpay-callback', vnpayCallback);
+
+router.get('/:bookingId', verifyJWT, checkPaymentStatus);
 
 export default router;

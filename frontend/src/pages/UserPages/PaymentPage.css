@@ -1,0 +1,235 @@
+.payment-loading {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    color: var(--text-muted);
+}
+
+.payment-page {
+    padding: 48px 0 80px;
+}
+
+.payment-page__inner {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 32px;
+    align-items: start;
+}
+
+/* ── Order Summary ────────────────────── */
+.payment-order {
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.payment-order__title {
+    font-size: 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.payment-movie {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.payment-movie__poster {
+    width: 80px;
+    height: 112px;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+}
+
+.payment-movie__info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.payment-movie__title {
+    font-size: 18px;
+    font-family: var(--font-body);
+}
+
+.payment-movie__info p {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+/* Seats */
+.payment-seats h3 {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.payment-seats__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.payment-seat-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.payment-seat-badge {
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.payment-seat-badge--standard {
+    background: #2A2A3A;
+    color: var(--text-secondary);
+}
+
+.payment-seat-badge--vip {
+    background: rgba(212, 175, 55, 0.2);
+    color: var(--color-gold);
+    border: 1px solid var(--color-gold);
+}
+
+.payment-seat-badge--sweetbox {
+    background: rgba(167, 139, 250, 0.2);
+    color: #a78bfa;
+    border: 1px solid #a78bfa;
+}
+
+.payment-seat-type {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Total */
+.payment-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0 0;
+    border-top: 1px solid var(--border);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.payment-total__amount {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+/* ── Payment Panel ────────────────────── */
+.payment-panel {
+    position: sticky;
+    top: 88px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.payment-panel__title {
+    font-size: 18px;
+    font-family: var(--font-body);
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.payment-method__card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition);
+}
+
+.payment-method__card--active {
+    border-color: var(--color-gold);
+    background: var(--color-gold-muted);
+}
+
+.payment-method__logo {
+    font-size: 24px;
+}
+
+.payment-method__name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.payment-method__desc {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.payment-method__check {
+    margin-left: auto;
+    color: var(--color-gold);
+    font-weight: 700;
+}
+
+.payment-panel__notice {
+    padding: 12px;
+    background: var(--bg-surface-2);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.payment-panel__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.payment-panel__pay-btn {
+    width: 100%;
+    padding: 14px;
+    font-size: 15px;
+}
+
+.payment-panel__pay-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.payment-panel__cancel-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+@media (max-width: 900px) {
+    .payment-page__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .payment-panel {
+        position: static;
+    }
+}

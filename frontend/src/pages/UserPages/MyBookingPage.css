@@ -1,0 +1,114 @@
+.my-bookings {
+    padding: 48px 0 80px;
+}
+
+.my-bookings__loading {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-skeleton {
+    height: 120px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(90deg, var(--bg-surface) 25%, var(--bg-surface-2) 50%, var(--bg-surface) 75%);
+    background-size: 200% auto;
+    animation: shimmer-bg 1.5s linear infinite;
+}
+
+.my-bookings__empty {
+    text-align: center;
+    padding: 80px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    color: var(--text-muted);
+    font-size: 16px;
+}
+
+.booking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-card {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: border-color var(--transition);
+}
+
+.booking-card:hover {
+    border-color: var(--border-hover);
+}
+
+.booking-card__poster {
+    width: 70px;
+    height: 100px;
+    flex-shrink: 0;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    background: var(--bg-surface-2);
+}
+
+.booking-card__poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.booking-card__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.booking-card__title {
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.booking-card__time,
+.booking-card__room,
+.booking-card__seats {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.booking-card__right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.booking-card__status {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.booking-card__total {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-gold);
+}
+
+@media (max-width: 600px) {
+    .booking-card {
+        flex-wrap: wrap;
+    }
+
+    .booking-card__right {
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+}

@@ -64,7 +64,7 @@ export const getAllShowtimes = async (req, res) => {
 
 }
 
-export const getShowtimeById = async () => {
+export const getShowtimeById = async (req, res) => {
     try {
         const { id } = req.params;
 

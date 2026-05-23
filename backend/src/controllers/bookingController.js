@@ -118,14 +118,29 @@ export const getAllBookings = async (req, res) => {
 export const getBookingById = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId = req.user.id;
+        const isAdmin = req.user.role === 'admin';
 
         const booking = await Booking.findById(id)
             .populate('userID', 'fullname email phone')
-            .populate('showtimeID');
+            .populate({
+                path: 'showtimeID',
+                populate: [
+                    { path: 'movieID', select: 'title posterURL duration genre' },
+                    { path: 'roomID', select: 'name' }
+                ]
+            });
 
         if (!booking) {
             return res.status(404).json({
                 message: 'Booking not found!'
+            });
+        }
+
+        // User thường chỉ xem được booking của chính mình
+        if (!isAdmin && booking.userID._id.toString() !== userId.toString()) {
+            return res.status(403).json({
+                message: 'Unauthorized to view this booking'
             });
         }
 
@@ -257,7 +272,13 @@ export const getUserBookings = async (req, res) => {
         }
 
         const bookings = await Booking.find(queryCondition)
-            .populate('showtimeID')
+            .populate({
+                path: 'showtimeID',
+                populate: [
+                    { path: 'movieID', select: 'title posterURL duration genre' },
+                    { path: 'roomID', select: 'name' }
+                ]
+            })
             .sort({ createdAt: -1 });
 
         return res.status(200).json({

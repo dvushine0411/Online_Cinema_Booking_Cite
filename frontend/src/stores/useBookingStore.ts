@@ -50,7 +50,7 @@ export const useBookingStore = create<BookingState>((set) => ({
     },
 
     fetchBookingById: async (id) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, selectedBooking: null });
         try {
             const response = await bookingService.getBookingById(id);
             set({ selectedBooking: response.data });

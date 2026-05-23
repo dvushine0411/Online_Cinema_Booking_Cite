@@ -19,34 +19,33 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             user: null,
             accessToken: null,
             isAuthenticated: false,
 
             signIn: async (payload) => {
+                localStorage.clear();
                 const data = await authService.signIn(payload);
-                localStorage.setItem("accessToken", data.accessToken);
+                get().setAccessToken(data.accessToken);
                 set({
                     user: data.user,
-                    accessToken: data.accessToken,
                     isAuthenticated: true,
                 });
             },
 
             signUp: async (payload) => {
                 const data = await authService.signUp(payload);
-                localStorage.setItem("accessToken", data.accessToken);
+                get().setAccessToken(data.accessToken);
                 set({
                     user: data.user,
-                    accessToken: data.accessToken,
                     isAuthenticated: true,
                 });
             },
 
             signOut: async () => {
                 await authService.signOut();
-                localStorage.removeItem("accessToken");
+                get().clearAuth();
                 set({
                     user: null,
                     accessToken: null,
@@ -55,17 +54,16 @@ export const useAuthStore = create<AuthState>()(
             },
 
             setAccessToken: (token) => {
-                localStorage.setItem("accessToken", token);
                 set({ accessToken: token });
             },
 
             clearAuth: () => {
-                localStorage.removeItem("accessToken");
                 set({
                     user: null,
                     accessToken: null,
                     isAuthenticated: false,
                 });
+                localStorage.clear();
             },
         }),
         {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useMovieStore } from '@/stores/useMovieStore'
 import { movieService } from '@/services/movieService'
 import { formatDate } from '@/lib/utils'
@@ -76,13 +77,15 @@ export default function AdminMoviesPage() {
                                         </td>
                                         <td>
                                             <div className="admin-actions">
-                                                <a href={`/admin/movies/edit/${m._id}`} className="admin-btn-edit">Sửa</a>
+                                                <Link to={`/admin/movies/edit/${m._id}`} className="admin-btn-edit">
+                                                    ✏️ Sửa
+                                                </Link>
                                                 <button
                                                     className="admin-btn-delete"
                                                     onClick={() => handleDelete(m._id, m.title)}
                                                     disabled={deleting === m._id}
                                                 >
-                                                    {deleting === m._id ? '...' : 'Xoá'}
+                                                    {deleting === m._id ? '...' : '🗑️ Xoá'}
                                                 </button>
                                             </div>
                                         </td>

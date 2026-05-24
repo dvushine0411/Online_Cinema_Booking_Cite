@@ -58,13 +58,13 @@ export default function Navbar() {
                 <div className="navbar__actions">
                     {isAuthenticated ? (
                         <div className="navbar__user">
+                            <span className="navbar__greeting">
+                                Xin chào, <strong>{user?.fullname}</strong>
+                            </span>
                             <div className="navbar__avatar">
-                                {user?.fullname?.charAt(0).toUpperCase()}
+                                {user?.fullname?.charAt(0).toUpperCase() ?? 'U'}
                             </div>
                             <div className="navbar__dropdown">
-                                <p className="navbar__dropdown-name">{user?.fullname}</p>
-                                <p className="navbar__dropdown-role">{user?.role}</p>
-                                <hr className="navbar__dropdown-divider" />
                                 <Link to="/my-bookings" className="navbar__dropdown-item">
                                     🎟️ Vé của tôi
                                 </Link>

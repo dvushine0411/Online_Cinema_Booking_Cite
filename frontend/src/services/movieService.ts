@@ -27,8 +27,10 @@ export const movieService = {
         return response.data;
     },
 
-    updateMovie: async (id: string, payload: Partial<Omit<Movie, "_id" | "createdAt" | "updatedAt" | "avgRating" | "reviewCount" | "posterURL">>): Promise<ApiResponse<Movie>> => {
-        const response = await api.patch(`movies/update/${id}`, payload);
+    updateMovie: async (id: string, formData: FormData): Promise<ApiResponse<Movie>> => {
+        const response = await api.patch(`movies/update/${id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         return response.data;
     }
 }

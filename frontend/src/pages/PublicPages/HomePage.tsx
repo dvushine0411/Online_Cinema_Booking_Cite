@@ -24,8 +24,13 @@ export default function HomePage() {
             {/* ── Hero Banner ─────────────────────── */}
             <section className="hero-banner">
                 <div className="hero-banner__bg" />
+                <img
+                    src="/popcorn-hero.png"
+                    alt="Popcorn and drinks"
+                    className="hero-banner__popcorn"
+                />
                 <div className="container hero-banner__content">
-                    <p className="hero-banner__sub">🎬 Chào mừng đến với CinemaX</p>
+                    <p className="hero-banner__sub">Chào mừng đến với CinemaX</p>
                     <h1 className="hero-banner__title">
                         Trải nghiệm điện ảnh<br />
                         <span className="shimmer">đỉnh cao nhất</span>
@@ -34,6 +39,11 @@ export default function HomePage() {
                         Chọn phim, chọn ghế, thanh toán trong vài giây.
                     </p>
                 </div>
+                <img
+                    src="/ticket-hero.png"
+                    alt="Movie ticket"
+                    className="hero-banner__ticket"
+                />
                 <div className="hero-banner__overlay" />
             </section>
 

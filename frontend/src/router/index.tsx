@@ -23,6 +23,8 @@ import MyBookingsPage from '@/pages/UserPages/MyBookingPage.tsx'
 
 // Pages — Admin
 import AdminMoviesPage from '@/pages/AdminPages/AdminMoviesPage.tsx'
+import AdminMoviesEditPage from '@/pages/AdminPages/AdminMoviesEditPage.tsx'
+import AdminMoviesCreatePage from '@/pages/AdminPages/AdminMoviesCreatePage';
 import AdminShowtimesPage from '@/pages/AdminPages/AdminShowtimesPage.tsx'
 import AdminRoomsPage from '@/pages/AdminPages/AdminRoomsPage.tsx'
 import AdminBookingsPage from '@/pages/AdminPages/AdminBookingsPage.tsx'
@@ -53,6 +55,8 @@ export default function AppRouter() {
                 {/* Admin routes */}
                 <Route element={<AdminRoute />}>
                     <Route path="/admin/movies" element={<AdminMoviesPage />} />
+                    <Route path="/admin/movies/edit/:id" element={<AdminMoviesEditPage />} />
+                    <Route path="/admin/movies/create" element={<AdminMoviesCreatePage />} />
                     <Route path="/admin/showtimes" element={<AdminShowtimesPage />} />
                     <Route path="/admin/rooms" element={<AdminRoomsPage />} />
                     <Route path="/admin/bookings" element={<AdminBookingsPage />} />

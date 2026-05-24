@@ -14,7 +14,7 @@ router.get('/:id', getMovieById);
 // router dành riêng cho admin //
 router.post('/create', verifyJWT, verifyAdmin, upload.single('poster'), createMovie);
 router.delete('/delete/:id', verifyJWT, verifyAdmin, deleteMovie);
-router.patch('/update/:id', verifyJWT, verifyAdmin, updateMovie);
+router.patch('/update/:id', verifyJWT, verifyAdmin, upload.single('poster'), updateMovie);
 
 
 

@@ -91,7 +91,13 @@ export const signIn = async (req, res) => {
         })
         return res.status(200).json({
             message: `User ${user.username} successfully login!`,
-            accessToken
+            accessToken,
+            user: {
+                id: user._id,
+                fullname: user.fullname,
+                username: user.username,
+                role: user.role
+            }
         })
 
     } catch (error) {

@@ -173,6 +173,11 @@ export const updateMovie = async (req, res) => {
         const { id } = req.params;
         const updateData = req.body;
 
+        // Nếu admin upload poster mới thì cập nhật posterURL
+        if (req.file) {
+            updateData.posterURL = req.file.path;
+        }
+
         const updatedMovie = await Movie.findByIdAndUpdate(id, updateData, { new: true });
 
         if (!updatedMovie) {

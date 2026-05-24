@@ -16,43 +16,41 @@ const checkAndCancelExpiredBookings = async () => {
     try {
         const now = new Date();
 
-        const tenMinutesAgo = new Date(now.getTime() - 10 * 60 * 1000);
+        const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
 
         const expiredBookings = await Booking.find({
 
             status: 'Pending',
-            createdAt: { $lt: tenMinutesAgo }
+            createdAt: { $lt: fifteenMinutesAgo }
         }).select('_id showtimeID seats createdAt');
 
-        if(expiredBookings.length === 0)
-        {
+        if (expiredBookings.length === 0) {
             console.log('[Booking scheduler] no expiredBookings to cancel');
             return;
         }
 
-        for(const booking of expiredBookings)
-        {
+        for (const booking of expiredBookings) {
             const seatIds = booking.seats.map(s => `${s.row}${s.number}`);
 
             await Showtime.findByIdAndUpdate(
                 booking.showtimeID,
                 {
-                    $pull: {bookedSeat: { $in: seatIds}}
+                    $pull: { bookedSeat: { $in: seatIds } }
                 }
             );
 
             await Booking.findByIdAndUpdate(
                 booking._id,
-                { status: 'Cancelled'}
+                { status: 'Cancelled' }
             );
 
             console.log(`[Booking Scheduler] Cancelled booking ${booking._id} (created at ${booking.createdAt})`);
 
         }
-        
+
     } catch (error) {
         console.error('[Booking Scheduler] Error:', error.message);
-        
+
     }
 };
 

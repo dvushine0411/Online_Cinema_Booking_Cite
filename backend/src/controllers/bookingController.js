@@ -33,7 +33,7 @@ export const createBooking = async (req, res) => {
                 bookedSeat: { $nin: seatIds }
             },
             {
-                $push: { bookedSeat: { $each: seats } }
+                $push: { bookedSeat: { $each: seatIds } }
             },
             {
                 new: true

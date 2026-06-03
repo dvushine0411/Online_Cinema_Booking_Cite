@@ -38,8 +38,8 @@
     object-position: bottom left;
     z-index: 1;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0.85) 50%, black 100%);
-    mask-image: linear-gradient(to left, transparent 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0.85) 50%, black 100%);
+    -webkit-mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, 0.4) 20%, rgba(0, 0, 0, 0.85) 50%, black 100%);
+    mask-image: linear-gradient(to left, transparent 0%, rgba(0, 0, 0, 0.4) 20%, rgba(0, 0, 0, 0.85) 50%, black 100%);
     animation: popcorn-float 4s ease-in-out infinite;
     filter: drop-shadow(0 8px 40px rgba(232, 25, 44, 0.25));
 }
@@ -54,20 +54,34 @@
     object-position: bottom right;
     z-index: 1;
     pointer-events: none;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0.85) 50%, black 100%);
-    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.4) 20%, rgba(0,0,0,0.85) 50%, black 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.4) 20%, rgba(0, 0, 0, 0.85) 50%, black 100%);
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.4) 20%, rgba(0, 0, 0, 0.85) 50%, black 100%);
     animation: ticket-float 5s ease-in-out infinite;
     filter: drop-shadow(0 8px 40px rgba(212, 175, 55, 0.2));
 }
 
 @keyframes popcorn-float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50%       { transform: translateY(-10px) rotate(0.8deg); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-10px) rotate(0.8deg);
+    }
 }
 
 @keyframes ticket-float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50%       { transform: translateY(-8px) rotate(-0.6deg); }
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-8px) rotate(-0.6deg);
+    }
 }
 
 .hero-banner__content {
@@ -206,6 +220,46 @@
     color: var(--text-muted);
     font-size: 15px;
 }
+
+/* ── Pagination ──────────────────────────────── */
+.home-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 40px;
+}
+
+.home-pagination__btn {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: color var(--transition), background var(--transition), border-color var(--transition);
+}
+
+.home-pagination__btn:hover:not(:disabled) {
+    color: var(--text-primary);
+    background: var(--bg-surface-2);
+    border-color: var(--color-red);
+}
+
+.home-pagination__btn--active {
+    color: #fff;
+    background: var(--color-red);
+    border-color: var(--color-red);
+}
+
+.home-pagination__btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
 
 /* ── Responsive ──────────────────────────────── */
 @media (max-width: 768px) {

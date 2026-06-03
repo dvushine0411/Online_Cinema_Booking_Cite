@@ -1,0 +1,251 @@
+/* frontend/src/pages/AdminPages/AdminHomePage.css */
+
+/* ── Header ─────────────────────────────────────────── */
+
+.admin-home__header {
+    margin-bottom: 48px;
+    text-align: center;
+}
+
+/* ── Grid ───────────────────────────────────────────── */
+
+.admin-home__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* ── Card ───────────────────────────────────────────── */
+
+.admin-home__card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 32px 28px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    text-align: left;
+    overflow: hidden;
+    transition:
+        transform 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.admin-home__card:hover {
+    transform: translateY(-6px);
+}
+
+/* Glow overlay on hover */
+
+.admin-home__card-glow {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: var(--radius-lg);
+}
+
+.admin-home__card:hover .admin-home__card-glow {
+    opacity: 1;
+}
+
+/* ── Accent variants ─────────────────────────────────── */
+
+.card-accent--red {
+    border-color: rgba(232, 25, 44, 0.25);
+}
+
+.card-accent--red:hover {
+    border-color: var(--color-red);
+    box-shadow: 0 12px 40px rgba(232, 25, 44, 0.2);
+}
+
+.card-accent--red .admin-home__card-glow {
+    background: radial-gradient(ellipse at top left, rgba(232, 25, 44, 0.08) 0%, transparent 70%);
+}
+
+.card-accent--red .admin-home__card-icon {
+    background: rgba(232, 25, 44, 0.12);
+    box-shadow: 0 0 0 1px rgba(232, 25, 44, 0.25);
+}
+
+.card-accent--red .admin-home__card-label {
+    color: #ff4d5e;
+}
+
+.card-accent--red .admin-home__card-arrow {
+    color: var(--color-red);
+}
+
+.card-accent--gold {
+    border-color: rgba(212, 175, 55, 0.25);
+}
+
+.card-accent--gold:hover {
+    border-color: var(--color-gold);
+    box-shadow: 0 12px 40px rgba(212, 175, 55, 0.18);
+}
+
+.card-accent--gold .admin-home__card-glow {
+    background: radial-gradient(ellipse at top left, rgba(212, 175, 55, 0.08) 0%, transparent 70%);
+}
+
+.card-accent--gold .admin-home__card-icon {
+    background: rgba(212, 175, 55, 0.12);
+    box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.3);
+}
+
+.card-accent--gold .admin-home__card-label {
+    color: var(--color-gold-light);
+}
+
+.card-accent--gold .admin-home__card-arrow {
+    color: var(--color-gold);
+}
+
+.card-accent--blue {
+    border-color: rgba(59, 130, 246, 0.25);
+}
+
+.card-accent--blue:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 12px 40px rgba(59, 130, 246, 0.18);
+}
+
+.card-accent--blue .admin-home__card-glow {
+    background: radial-gradient(ellipse at top left, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+}
+
+.card-accent--blue .admin-home__card-icon {
+    background: rgba(59, 130, 246, 0.12);
+    box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.3);
+}
+
+.card-accent--blue .admin-home__card-label {
+    color: #60a5fa;
+}
+
+.card-accent--blue .admin-home__card-arrow {
+    color: #3b82f6;
+}
+
+.card-accent--purple {
+    border-color: rgba(139, 92, 246, 0.25);
+}
+
+.card-accent--purple:hover {
+    border-color: #8b5cf6;
+    box-shadow: 0 12px 40px rgba(139, 92, 246, 0.18);
+}
+
+.card-accent--purple .admin-home__card-glow {
+    background: radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+}
+
+.card-accent--purple .admin-home__card-icon {
+    background: rgba(139, 92, 246, 0.12);
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+}
+
+.card-accent--purple .admin-home__card-label {
+    color: #a78bfa;
+}
+
+.card-accent--purple .admin-home__card-arrow {
+    color: #8b5cf6;
+}
+
+.card-accent--green {
+    border-color: rgba(16, 185, 129, 0.25);
+}
+
+.card-accent--green:hover {
+    border-color: #10b981;
+    box-shadow: 0 12px 40px rgba(16, 185, 129, 0.18);
+}
+
+.card-accent--green .admin-home__card-glow {
+    background: radial-gradient(ellipse at top left, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
+}
+
+.card-accent--green .admin-home__card-icon {
+    background: rgba(16, 185, 129, 0.12);
+    box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.3);
+}
+
+.card-accent--green .admin-home__card-label {
+    color: #34d399;
+}
+
+.card-accent--green .admin-home__card-arrow {
+    color: #10b981;
+}
+
+/* ── Card elements ───────────────────────────────────── */
+
+.admin-home__card-icon {
+    font-size: 32px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    margin-bottom: 6px;
+    transition: transform 0.25s ease;
+}
+
+.admin-home__card:hover .admin-home__card-icon {
+    transform: scale(1.1) rotate(-4deg);
+}
+
+.admin-home__card-label {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.2;
+    transition: color 0.2s ease;
+}
+
+.admin-home__card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    flex: 1;
+}
+
+.admin-home__card-arrow {
+    font-size: 18px;
+    font-weight: 700;
+    margin-top: 8px;
+    transition: transform 0.25s ease;
+    display: inline-block;
+}
+
+.admin-home__card:hover .admin-home__card-arrow {
+    transform: translateX(6px);
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+
+@media (max-width: 900px) {
+    .admin-home__grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 540px) {
+    .admin-home__grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-home__card {
+        padding: 24px 20px;
+    }
+}

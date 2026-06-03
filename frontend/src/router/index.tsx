@@ -29,6 +29,8 @@ import AdminShowtimesPage from '@/pages/AdminPages/AdminShowtimesPage.tsx'
 import AdminRoomsPage from '@/pages/AdminPages/AdminRoomsPage.tsx'
 import AdminBookingsPage from '@/pages/AdminPages/AdminBookingsPage.tsx'
 import AdminNewsPage from '@/pages/AdminPages/AdminNewsPage.tsx'
+import AdminHomePage from '@/pages/AdminPages/AdminHomePage.tsx'
+import AdminShowtimesCreatePage from '@/pages/AdminPages/AdminShowtimesCreatePage.tsx'
 
 // 404
 import NotFoundPage from '@/pages/PublicPages/NotFoundPage'
@@ -54,6 +56,7 @@ export default function AppRouter() {
 
                 {/* Admin routes */}
                 <Route element={<AdminRoute />}>
+                    <Route path="/admin" element={<AdminHomePage />} />
                     <Route path="/admin/movies" element={<AdminMoviesPage />} />
                     <Route path="/admin/movies/edit/:id" element={<AdminMoviesEditPage />} />
                     <Route path="/admin/movies/create" element={<AdminMoviesCreatePage />} />
@@ -61,6 +64,7 @@ export default function AppRouter() {
                     <Route path="/admin/rooms" element={<AdminRoomsPage />} />
                     <Route path="/admin/bookings" element={<AdminBookingsPage />} />
                     <Route path="/admin/news" element={<AdminNewsPage />} />
+                    <Route path="/admin/showtimes/create" element={<AdminShowtimesCreatePage />} />
                 </Route>
             </Route>
 

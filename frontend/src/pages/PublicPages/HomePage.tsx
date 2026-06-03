@@ -8,13 +8,17 @@ type Tab = 'Now showing' | 'Coming soon'
 export default function HomePage() {
     const [activeTab, setActiveTab] = useState<Tab>('Now showing')
     const { movies, isLoading, fetchMovies } = useMovieStore()
+    const [page, setPage] = useState(1)
+    const totalPages = movies?.totalPages ?? 1
+    const currentPage = movies?.currentPage ?? 1
 
     useEffect(() => {
         fetchMovies({
             status: activeTab === 'Now showing' ? 'Now Showing' : 'Coming Soon',
-            limit: '20',
+            limit: '12',
+            page: String(page)
         })
-    }, [activeTab])
+    }, [activeTab, page])
 
     const movieList = movies?.data ?? []
 
@@ -84,6 +88,36 @@ export default function HomePage() {
                             {movieList.map((movie) => (
                                 <MovieCard key={movie._id} movie={movie} />
                             ))}
+                        </div>
+                    )}
+
+                    {totalPages > 1 && (
+                        <div className="home-pagination">
+                            <button
+                                className="home-pagination__btn"
+                                onClick={() => setPage(p => p - 1)}
+                                disabled={currentPage <= 1}
+                            >
+                                &laquo; Trước
+                            </button>
+
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                                <button
+                                    key={p}
+                                    className={`home-pagination__btn ${p === currentPage ? 'home-pagination__btn--active' : ''}`}
+                                    onClick={() => setPage(p)}
+                                >
+                                    {p}
+                                </button>
+                            ))}
+
+                            <button
+                                className="home-pagination__btn"
+                                onClick={() => setPage(p => p + 1)}
+                                disabled={currentPage >= totalPages}
+                            >
+                                Sau &raquo;
+                            </button>
                         </div>
                     )}
                 </div>

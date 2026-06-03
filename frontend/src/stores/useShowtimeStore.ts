@@ -51,7 +51,7 @@ export const useShowtimeStore = create<ShowtimeState>((set) => ({
     },
 
     fetchShowtimesByMovieId: async (movieID, params) => {
-        set({ isLoading: true, error: null });
+        set({ isLoading: true, error: null, showtimes: [] });
         try {
             const response = await showtimeService.getShowtimesByMovieId(movieID, params);
             set({ showtimes: response.data });

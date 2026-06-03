@@ -48,7 +48,7 @@ export default function Navbar() {
                         </NavLink>
                     )}
                     {user?.role === 'Admin' && (
-                        <NavLink to="/admin/movies" className={({ isActive }) => isActive ? 'navbar__link navbar__link--active' : 'navbar__link'}>
+                        <NavLink to="/admin" className={({ isActive }) => isActive ? 'navbar__link navbar__link--active' : 'navbar__link'}>
                             Quản trị
                         </NavLink>
                     )}
@@ -69,7 +69,7 @@ export default function Navbar() {
                                     🎟️ Vé của tôi
                                 </Link>
                                 {user?.role === 'Admin' && (
-                                    <Link to="/admin/movies" className="navbar__dropdown-item">
+                                    <Link to="/admin" className="navbar__dropdown-item">
                                         ⚙️ Quản trị
                                     </Link>
                                 )}

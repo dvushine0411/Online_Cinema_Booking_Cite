@@ -47,7 +47,7 @@ export interface CreateShowtimePayload {
     movieID: string;
     roomID: string;
     startTime: string;
-    endTime: string;
+    endTime?: string;
     ticketPrices: TicketPrices;
 }
 

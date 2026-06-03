@@ -3,7 +3,6 @@ import { useNewsStore } from '@/stores/useNewsStore'
 import { newsService } from '@/services/newsService'
 import { formatDate } from '@/lib/utils'
 import { NEWS_CATEGORIES } from '@/lib/constants'
-import type { NewsCategory } from '@/lib/constants'
 import toast from 'react-hot-toast'
 import './AdminPages.css'
 

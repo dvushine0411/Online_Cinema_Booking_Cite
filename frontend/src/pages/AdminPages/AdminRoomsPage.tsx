@@ -38,7 +38,7 @@ export default function AdminRoomsPage() {
     }
 
     const countSeatsByType = (room: Room, type: string) =>
-        room.seatLayouts.filter(s => s.type === type).length
+        room.seatLayouts?.filter(s => s.type === type).length ?? 0
 
     return (
         <div className="admin-page fade-in">
@@ -72,7 +72,7 @@ export default function AdminRoomsPage() {
                                         <td>
                                             <p className="admin-movie-title">{r.name}</p>
                                         </td>
-                                        <td className="admin-cell-muted">{r.seatLayouts.length} ghế</td>
+                                        <td className="admin-cell-muted">{r?.seatLayouts?.length} ghế</td>
                                         <td className="admin-cell-muted">{countSeatsByType(r, 'Standard')}</td>
                                         <td className="admin-cell-muted">{countSeatsByType(r, 'VIP')}</td>
                                         <td className="admin-cell-muted">{countSeatsByType(r, 'Sweetbox')}</td>

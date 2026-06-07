@@ -2,6 +2,8 @@ import express from 'express';
 import Booking from '../models/Booking.js';
 import Showtime from '../models/Showtime.js';
 import User from '../models/User.js';
+import { markSeatsAsPaying } from '../sockets/socketHandler.js';
+
 
 // Hàm dành cho user //
 
@@ -66,6 +68,8 @@ export const createBooking = async (req, res) => {
             status: "Pending"
         });
 
+        // Đánh dấu các ghế là đang thanh toán → timer 5 phút sẽ không nhả ghế nữa
+        markSeatsAsPaying(showtimeID, seatIds, userId);
 
         return res.status(201).json({
             message: "Booking successfully",

@@ -10,11 +10,25 @@ import reviewRoute from './routes/reviewRoute.js';
 import newsRoute from './routes/newsRoute.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+
 import { initBookingScheduler } from './services/bookingScheduler.js';
+import { initSocketHandler } from './sockets/socketHandler.js';
 
 
 
 const app = express();
+const httpServer = createServer(app);
+
+const io = new Server(httpServer, {
+    cors: {
+        origin: process.env.FRONTEND_URL,
+        credentials: true,
+    }
+});
+
+export { io }
 
 app.use(express.json());
 app.use(cookieParser());
@@ -43,8 +57,10 @@ app.use('/api/news', newsRoute);
 
 ConnectDB().then(() => {
     console.log('Database connected!');
-    initBookingScheduler();
-    app.listen(PORT, () => {
+    initBookingScheduler(io);
+    initSocketHandler(io);
+
+    httpServer.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     })
 });

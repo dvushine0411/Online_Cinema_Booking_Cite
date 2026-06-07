@@ -1,6 +1,8 @@
 import { VNPay } from 'vnpay';
 import Booking from '../models/Booking.js';
 import 'dotenv/config';
+import { io } from '../server.js';
+import { confirmBookedSeats } from '../sockets/socketHandler.js';
 
 const vnpay = new VNPay({
     tmnCode: process.env.VNPAY_TMN_CODE,
@@ -117,6 +119,11 @@ export const vnpayCallback = async (req, res) => {
             };
 
             await booking.save();
+
+            if (booking.showtimeID && booking.seats) {
+                const seatIds = booking.seats.map(s => `${s.row}${s.number}`);
+                confirmBookedSeats(io, booking.showtimeID.toString(), seatIds);
+            }
 
             return res.status(200).json({
                 message: 'Payment successful',

@@ -1,18 +1,19 @@
 import cron from 'node-cron';
 import Booking from '../models/Booking.js';
 import Showtime from '../models/Showtime.js';
+import { forceReleaseSeats } from '../sockets/socketHandler.js';
 
-export const initBookingScheduler = () => {
+export const initBookingScheduler = (io) => {
     cron.schedule('* * * * *', async () => {
         console.log('[Booking scheduler] checking for expired bookings...');
 
-        await checkAndCancelExpiredBookings();
+        await checkAndCancelExpiredBookings(io);
 
     });
 
 }
 
-const checkAndCancelExpiredBookings = async () => {
+const checkAndCancelExpiredBookings = async (io) => {
     try {
         const now = new Date();
 
@@ -43,6 +44,10 @@ const checkAndCancelExpiredBookings = async () => {
                 booking._id,
                 { status: 'Cancelled' }
             );
+
+            // Dọn RAM Map: xóa isPaying và broadcast seat_released cho tất cả client
+            // Tránh tình huống socket vẫn kết nối nhưng ghế bị kẹt vĩnh viễn trên Map
+            forceReleaseSeats(io, booking.showtimeID.toString(), seatIds);
 
             console.log(`[Booking Scheduler] Cancelled booking ${booking._id} (created at ${booking.createdAt})`);
 

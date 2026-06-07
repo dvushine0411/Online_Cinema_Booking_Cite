@@ -151,9 +151,9 @@ export const getShowtimesByMovieId = async (req, res) => {
 
 export const createShowtime = async (req, res) => {
     try {
-        const { movieID, roomID, startTime, endTime, ticketPrices } = req.body;
+        const { movieID, roomID, startTime, ticketPrices } = req.body;
 
-        if (!movieID || !roomID || !startTime || !endTime) {
+        if (!movieID || !roomID || !startTime) {
             return res.status(400).json({
                 message: 'Missing required fields: movieID, roomID, startTime, endTime'
             });

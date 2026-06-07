@@ -172,6 +172,58 @@
     opacity: 0.5;
 }
 
+/* Held by other — vàng, không bấm được */
+.seat--held {
+    background: rgba(245, 158, 11, 0.25) !important;
+    color: #f59e0b !important;
+    border: 1px solid #f59e0b !important;
+    cursor: not-allowed !important;
+    animation: seat-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes seat-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+/* Countdown timer trong sidebar */
+.booking-countdown {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    transition: background 0.3s, border-color 0.3s;
+}
+
+.booking-countdown strong {
+    font-size: 15px;
+    font-weight: 700;
+    color: #f59e0b;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Trạng thái khẩn cấp: dưới 60 giây */
+.booking-countdown--urgent {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.4);
+    animation: countdown-flash 0.8s ease-in-out infinite;
+}
+
+.booking-countdown--urgent strong {
+    color: #ef4444;
+}
+
+@keyframes countdown-flash {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.7; }
+}
+
 /* Legend */
 .seatmap__legend {
     display: flex;

@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useShowtimeStore } from '@/stores/useShowtimeStore'
 import { useBookingStore } from '@/stores/useBookingStore'
+import { useAuthStore } from '@/stores/useAuthStore'
+import { useSocketSeat, type SeatStatus } from '@/hooks/useSocketSeat'
 import type { Seat } from '@/types/bookingTypes'
 import type { SeatLayout } from '@/types/roomTypes'
 import { formatCurrency, formatDateTime, formatSeatLabel } from '@/lib/utils'
@@ -14,21 +16,131 @@ type ShowtimeWithBooked = {
     bookedSeat: string[]
 }
 
+// ── Countdown hook: đếm ngược số giây còn lại kể từ expiresAt ──
+function useCountdown(expiresAt: number | null) {
+    const [secondsLeft, setSecondsLeft] = useState<number>(0)
+
+    useEffect(() => {
+        if (!expiresAt) {
+            setSecondsLeft(0)
+            return
+        }
+
+        const tick = () => {
+            const diff = Math.max(0, Math.floor((expiresAt - Date.now()) / 1000))
+            setSecondsLeft(diff)
+        }
+
+        tick()
+        const id = setInterval(tick, 1000)
+        return () => clearInterval(id)
+    }, [expiresAt])
+
+    return secondsLeft
+}
+
 export default function BookingPage() {
     const { showtimeId } = useParams<{ showtimeId: string }>()
     const navigate = useNavigate()
+    const token = useAuthStore((state) => state.accessToken)
+
+    console.log("=== KIỂM TRA TRƯỚC KHI GỌI SOCKET ===");
+    console.log("1. showtimeId:", showtimeId);
+    console.log("2. token:", token);
 
     const { selectedShowtime, isLoading, fetchShowtimeById } = useShowtimeStore()
-    const { createBooking, isLoading: booking } = useBookingStore()
+    const { createBooking, isLoading: bookingLoading } = useBookingStore()
 
+    // Ghế user đang chọn (local state)
     const [selectedSeats, setSelectedSeats] = useState<SeatLayout[]>([])
 
+    // Map<seatId, SeatStatus> — trạng thái real-time từ socket
+    const [seatStatusMap, setSeatStatusMap] = useState<Map<string, SeatStatus>>(new Map())
+
+    // Thời điểm hết hạn hold (để hiển thị countdown)
+    const [holdExpiresAt, setHoldExpiresAt] = useState<number | null>(null)
+
+    const secondsLeft = useCountdown(holdExpiresAt)
+
+    // ── Socket callbacks ──────────────────────────────────────
+    const handleSeatHeld = useCallback((seatId: string) => {
+        setSeatStatusMap(prev => new Map(prev).set(seatId, 'held_by_other'))
+    }, [])
+
+    const handleSeatReleased = useCallback((seatId: string) => {
+        setSeatStatusMap(prev => {
+            const next = new Map(prev)
+            next.delete(seatId)
+            return next
+        })
+    }, [])
+
+    const handleSeatBooked = useCallback((seatIds: string[]) => {
+        setSeatStatusMap(prev => {
+            const next = new Map(prev)
+            seatIds.forEach(id => next.set(id, 'booked'))
+            return next
+        })
+        // Nếu ghế của mình vừa được confirmed → không cần làm gì thêm,
+        // paymentController đã navigate sang trang kết quả thanh toán
+    }, [])
+
+    const handleHoldExpired = useCallback((seatId: string) => {
+        toast.error(`⏰ Ghế ${seatId} đã hết thời gian giữ! Vui lòng chọn lại.`, { duration: 4000 })
+
+        // Tách seatId "A1" → row = "A", number = 1
+        const row = seatId.replace(/\d+/g, '')
+        const number = parseInt(seatId.replace(/\D+/g, ''), 10)
+
+        setSelectedSeats(prev => prev.filter(s => !(s.row === row && s.number === number)))
+        setSeatStatusMap(prev => {
+            const next = new Map(prev)
+            next.delete(seatId)
+            return next
+        })
+
+        // Reset countdown nếu không còn ghế nào đang hold
+        setHoldExpiresAt(prev => {
+            // Nếu vẫn còn ghế khác đang giữ, giữ nguyên timer (timer đồng hồ chung)
+            return prev
+        })
+    }, [])
+
+    const handleCurrentHeldSeats = useCallback(
+        (seats: Array<{ seatId: string; heldByMe: boolean }>) => {
+            setSeatStatusMap(prev => {
+                const next = new Map(prev)
+                seats.forEach(({ seatId, heldByMe }) => {
+                    next.set(seatId, heldByMe ? 'held_by_me' : 'held_by_other')
+                })
+                return next
+            })
+        },
+        []
+    )
+
+    // ── Khởi tạo socket ───────────────────────────────────────
+    const { holdSeat, releaseSeat } = useSocketSeat({
+        showtimeId: showtimeId ?? '',
+        token,
+        onSeatHeld: handleSeatHeld,
+        onSeatReleased: handleSeatReleased,
+        onSeatBooked: handleSeatBooked,
+        onHoldExpired: handleHoldExpired,
+        onCurrentHeldSeats: handleCurrentHeldSeats,
+    })
+
+    // ── Fetch dữ liệu suất chiếu ──────────────────────────────
     useEffect(() => {
         if (showtimeId) fetchShowtimeById(showtimeId)
-        // Reset khi rời trang
-        return () => setSelectedSeats([])
+        return () => {
+            setSelectedSeats([])
+            setSeatStatusMap(new Map())
+            setHoldExpiresAt(null)
+        }
     }, [showtimeId])
 
+    // ── Loading state ─────────────────────────────────────────
     if (isLoading || !selectedShowtime) {
         return (
             <div className="booking-loading">
@@ -38,16 +150,18 @@ export default function BookingPage() {
         )
     }
 
+    // Danh sách ghế đã booked cứng trong DB
     const bookedSeat = ((selectedShowtime as unknown) as ShowtimeWithBooked).bookedSeat ?? []
     const seatLayouts = selectedShowtime.roomID?.seatLayouts ?? []
 
-    // Nhóm ghế theo hàng để render
+    // Nhóm ghế theo hàng
     const rows = seatLayouts.reduce<Record<string, SeatLayout[]>>((acc, seat) => {
         if (!acc[seat.row]) acc[seat.row] = []
         acc[seat.row].push(seat)
         return acc
     }, {})
 
+    // ── Helpers ───────────────────────────────────────────────
     const getPrice = (seatType: SeatLayout['type']): number => {
         const prices = selectedShowtime.ticketPrices
         switch (seatType) {
@@ -59,32 +173,69 @@ export default function BookingPage() {
 
     const totalAmount = selectedSeats.reduce((sum, s) => sum + getPrice(s.type), 0)
 
-    const isSeatBooked = (seat: SeatLayout) =>
-        bookedSeat.includes(formatSeatLabel(seat.row, seat.number))
-
-    const isSeatSelected = (seat: SeatLayout) =>
-        selectedSeats.some(s => s.row === seat.row && s.number === seat.number)
-
-    const handleSeatClick = (seat: SeatLayout) => {
-        if (isSeatBooked(seat)) return
-
-        if (isSeatSelected(seat)) {
-            setSelectedSeats(prev => prev.filter(s => !(s.row === seat.row && s.number === seat.number)))
-        } else {
-            if (selectedSeats.length >= MAX_SEAT_SELECTION) {
-                toast.error(`Tối đa ${MAX_SEAT_SELECTION} ghế mỗi lần đặt`)
-                return
-            }
-            setSelectedSeats(prev => [...prev, seat])
-        }
+    // Xác định trạng thái thực tế của ghế:
+    // Ưu tiên: DB booked (cứng nhất) > socket map (real-time) > available
+    const getSeatEffectiveStatus = (seat: SeatLayout): SeatStatus => {
+        const seatId = formatSeatLabel(seat.row, seat.number)
+        if (bookedSeat.includes(seatId)) return 'booked'
+        return seatStatusMap.get(seatId) ?? 'available'
     }
 
     const getSeatClass = (seat: SeatLayout): string => {
-        if (isSeatBooked(seat)) return `seat seat--${seat.type.toLowerCase()} seat--booked`
-        if (isSeatSelected(seat)) return `seat seat--${seat.type.toLowerCase()} seat--selected`
-        return `seat seat--${seat.type.toLowerCase()}`
+        const status = getSeatEffectiveStatus(seat)
+        const typeClass = `seat--${seat.type.toLowerCase()}`
+        const statusClass: Record<SeatStatus, string> = {
+            available: '',
+            held_by_me: 'seat--selected',      // Đỏ: ghế mình đang giữ
+            held_by_other: 'seat--held',        // Vàng: người khác đang giữ
+            booked: 'seat--booked',             // Xám: đã đặt xong
+        }
+        return `seat ${typeClass} ${statusClass[status]}`.trim()
     }
 
+    // ── Xử lý click ghế ──────────────────────────────────────
+    const handleSeatClick = (seat: SeatLayout) => {
+        const status = getSeatEffectiveStatus(seat)
+        const seatId = formatSeatLabel(seat.row, seat.number)
+
+        // Không cho bấm ghế đã booked hoặc người khác đang giữ
+        if (status === 'booked' || status === 'held_by_other') return
+
+        if (status === 'held_by_me') {
+            // Bỏ chọn → nhả ghế về Map
+            releaseSeat(seatId)
+            setSelectedSeats(prev => prev.filter(s => !(s.row === seat.row && s.number === seat.number)))
+            setSeatStatusMap(prev => {
+                const next = new Map(prev)
+                next.delete(seatId)
+                return next
+            })
+
+            // Reset countdown nếu không còn ghế nào
+            setSelectedSeats(prev => {
+                if (prev.filter(s => !(s.row === seat.row && s.number === seat.number)).length === 0) {
+                    setHoldExpiresAt(null)
+                }
+                return prev.filter(s => !(s.row === seat.row && s.number === seat.number))
+            })
+            return
+        }
+
+        // Chọn thêm ghế mới
+        if (selectedSeats.length >= MAX_SEAT_SELECTION) {
+            toast.error(`Tối đa ${MAX_SEAT_SELECTION} ghế mỗi lần đặt`)
+            return
+        }
+
+        holdSeat(seatId)
+        setSelectedSeats(prev => [...prev, seat])
+        setSeatStatusMap(prev => new Map(prev).set(seatId, 'held_by_me'))
+
+        // Bắt đầu đếm ngược 5 phút từ lúc hold ghế đầu tiên
+        setHoldExpiresAt(prev => prev ?? Date.now() + 5 * 60 * 1000)
+    }
+
+    // ── Xác nhận đặt chỗ → navigate sang thanh toán ──────────
     const handleConfirm = async () => {
         if (selectedSeats.length === 0) {
             toast.error('Vui lòng chọn ít nhất 1 ghế')
@@ -110,6 +261,14 @@ export default function BookingPage() {
         }
     }
 
+    // ── Format countdown mm:ss ────────────────────────────────
+    const formatCountdown = (s: number) => {
+        const m = Math.floor(s / 60)
+        const sec = s % 60
+        return `${m}:${sec.toString().padStart(2, '0')}`
+    }
+
+    // ── Render ────────────────────────────────────────────────
     return (
         <div className="booking-page fade-in">
             <div className="container">
@@ -143,17 +302,27 @@ export default function BookingPage() {
                                         <div className="seatmap__seats">
                                             {seats
                                                 .sort((a, b) => a.number - b.number)
-                                                .map(seat => (
-                                                    <button
-                                                        key={`${seat.row}${seat.number}`}
-                                                        className={getSeatClass(seat)}
-                                                        onClick={() => handleSeatClick(seat)}
-                                                        disabled={isSeatBooked(seat)}
-                                                        title={`${seat.row}${seat.number} - ${seat.type}`}
-                                                    >
-                                                        {seat.number}
-                                                    </button>
-                                                ))}
+                                                .map(seat => {
+                                                    const status = getSeatEffectiveStatus(seat)
+                                                    const isDisabled = status === 'booked' || status === 'held_by_other'
+                                                    return (
+                                                        <button
+                                                            key={`${seat.row}${seat.number}`}
+                                                            className={getSeatClass(seat)}
+                                                            onClick={() => handleSeatClick(seat)}
+                                                            disabled={isDisabled}
+                                                            title={
+                                                                status === 'held_by_other'
+                                                                    ? `${seat.row}${seat.number} - Đang được giữ`
+                                                                    : status === 'booked'
+                                                                        ? `${seat.row}${seat.number} - Đã đặt`
+                                                                        : `${seat.row}${seat.number} - ${seat.type}`
+                                                            }
+                                                        >
+                                                            {seat.number}
+                                                        </button>
+                                                    )
+                                                })}
                                         </div>
                                     </div>
                                 ))}
@@ -178,6 +347,10 @@ export default function BookingPage() {
                                 <span>Đang chọn</span>
                             </div>
                             <div className="legend-item">
+                                <span className="seat seat--held" />
+                                <span>Đang được giữ</span>
+                            </div>
+                            <div className="legend-item">
                                 <span className="seat seat--booked" />
                                 <span>Đã đặt</span>
                             </div>
@@ -188,6 +361,13 @@ export default function BookingPage() {
                     <aside className="booking-sidebar">
                         <div className="booking-summary">
                             <h3 className="booking-summary__title">Tóm tắt đơn</h3>
+
+                            {/* Countdown timer — chỉ hiện khi đang giữ ghế */}
+                            {holdExpiresAt && selectedSeats.length > 0 && (
+                                <div className={`booking-countdown ${secondsLeft <= 60 ? 'booking-countdown--urgent' : ''}`}>
+                                    ⏱ Thời gian giữ ghế: <strong>{formatCountdown(secondsLeft)}</strong>
+                                </div>
+                            )}
 
                             {selectedSeats.length === 0 ? (
                                 <p className="booking-summary__empty">Chưa chọn ghế nào</p>
@@ -215,9 +395,9 @@ export default function BookingPage() {
                             <button
                                 className="btn-primary booking-summary__btn"
                                 onClick={handleConfirm}
-                                disabled={selectedSeats.length === 0 || booking}
+                                disabled={selectedSeats.length === 0 || bookingLoading}
                             >
-                                {booking ? 'Đang xử lý...' : '💳 Tiến hành thanh toán'}
+                                {bookingLoading ? 'Đang xử lý...' : '💳 Tiến hành thanh toán'}
                             </button>
                         </div>
                     </aside>

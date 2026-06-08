@@ -31,6 +31,8 @@ import AdminBookingsPage from '@/pages/AdminPages/AdminBookingsPage.tsx'
 import AdminNewsPage from '@/pages/AdminPages/AdminNewsPage.tsx'
 import AdminHomePage from '@/pages/AdminPages/AdminHomePage.tsx'
 import AdminShowtimesCreatePage from '@/pages/AdminPages/AdminShowtimesCreatePage.tsx'
+import AdminNewsCreatePage from '@/pages/AdminPages/AdminNewsCreatePage';
+import AdminNewsEditPage from '@/pages/AdminPages/AdminNewsEditPage';
 
 // 404
 import NotFoundPage from '@/pages/PublicPages/NotFoundPage'
@@ -65,6 +67,8 @@ export default function AppRouter() {
                     <Route path="/admin/bookings" element={<AdminBookingsPage />} />
                     <Route path="/admin/news" element={<AdminNewsPage />} />
                     <Route path="/admin/showtimes/create" element={<AdminShowtimesCreatePage />} />
+                    <Route path="/admin/news/create" element={<AdminNewsCreatePage />} />
+                    <Route path="/admin/news/edit/:id" element={<AdminNewsEditPage />} />
                 </Route>
             </Route>
 
